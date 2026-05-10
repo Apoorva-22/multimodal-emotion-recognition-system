@@ -1,0 +1,74 @@
+import torch
+import torch.nn.functional as F
+import numpy as np
+
+from transformers import DistilBertTokenizer
+from src.models.text_model import TextEmotionModel
+
+emotion_labels = [
+    "angry",
+    "fear",
+    "happy",
+    "neutral",
+    "sad"
+]
+
+device = torch.device(
+    "cuda" if torch.cuda.is_available() else "cpu"
+)
+
+# load tokenizer
+tokenizer = DistilBertTokenizer.from_pretrained(
+    "distilbert-base-uncased"
+)
+
+# load model
+model = TextEmotionModel().to(device)
+model.load_state_dict(
+    torch.load(
+        "checkpoints/text.pt",
+        map_location=device
+    )
+)
+
+model.eval()
+
+
+def predict_text_emotion(text):
+
+    encoding = tokenizer(
+        text,
+        truncation=True,
+        padding="max_length",
+        max_length=64,
+        return_tensors="pt"
+    )
+
+    input_ids = encoding["input_ids"].to(device)
+    attention_mask = encoding["attention_mask"].to(device)
+
+    with torch.no_grad():
+        outputs, _ = model(
+            input_ids,
+            attention_mask
+        )
+
+        probs = F.softmax(
+            outputs,
+            dim=1
+        ).cpu().numpy()[0]
+
+        pred_idx = np.argmax(probs)
+
+    return {
+        "emotion": emotion_labels[pred_idx],
+        "probabilities": probs.tolist()
+    }
+
+
+if __name__ == "__main__":
+    sample_text = "I am feeling extremely happy today"
+
+    result = predict_text_emotion(sample_text)
+
+    print(result)

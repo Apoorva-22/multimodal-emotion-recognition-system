@@ -1,0 +1,13 @@
+checkpoints/
+data/raw/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+logs/
+.env
+.vscode/
+.idea/
+temp/
+sample.wav
+results.txt
+data/processed/video/
