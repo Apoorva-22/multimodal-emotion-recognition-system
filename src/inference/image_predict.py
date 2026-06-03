@@ -21,7 +21,7 @@ device = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )
 
-
+model = None
 
 transform = transforms.Compose([
     transforms.Resize((48,48)),
@@ -31,6 +31,7 @@ transform = transforms.Compose([
 
 
 def predict_image_emotion(image_path):
+    model = load_vision_model()
     frame = cv2.imread(image_path)
 
     if frame is None:
@@ -66,3 +67,22 @@ def predict_image_emotion(image_path):
         "emotion": emotion_labels[pred_idx],
         "probabilities": probs.tolist()
     }
+
+def load_vision_model():
+
+    global model
+
+    if model is None:
+
+        model = VisionEmotionModel().to(device)
+
+        model.load_state_dict(
+            torch.load(
+                "checkpoints/vision.pt",
+                map_location=device
+            )
+        )
+
+        model.eval()
+
+    return model
