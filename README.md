@@ -184,6 +184,17 @@ http://127.0.0.1:8000/docs
 
 ---
 
+## Demo
+
+### FastAPI Backend API
+![FastAPI](screenshots/fastapi.png)
+
+### Streamlit Frontend
+![Frontend](screenshots/frontend_input.png)
+
+### Prediction Results
+![Results](screenshots/frontend_results.png)
+
 # Real World Applications
 
 - Mental health assistants
