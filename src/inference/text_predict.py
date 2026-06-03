@@ -5,6 +5,9 @@ import numpy as np
 from transformers import DistilBertTokenizer
 from src.models.text_model import TextEmotionModel
 
+tokenizer = None
+model = None
+
 emotion_labels = [
     "angry",
     "fear",
@@ -17,21 +20,6 @@ device = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )
 
-# load tokenizer
-tokenizer = DistilBertTokenizer.from_pretrained(
-    "distilbert-base-uncased"
-)
-
-# load model
-model = TextEmotionModel().to(device)
-model.load_state_dict(
-    torch.load(
-        "checkpoints/text.pt",
-        map_location=device
-    )
-)
-
-model.eval()
 
 
 def predict_text_emotion(text):
@@ -65,6 +53,32 @@ def predict_text_emotion(text):
         "probabilities": probs.tolist()
     }
 
+def load_text_model():
+
+    global tokenizer
+    global model
+
+    if tokenizer is None:
+
+        tokenizer = DistilBertTokenizer.from_pretrained(
+            "distilbert-base-uncased"
+        )
+
+    if model is None:
+
+        model = TextEmotionModel().to(device)
+
+        model.load_state_dict(
+            torch.load(
+                "checkpoints/text.pt",
+                map_location=device
+            )
+        )
+
+        model.eval()
+
+    return tokenizer, model
+    
 
 if __name__ == "__main__":
     sample_text = "I am feeling extremely happy today"
