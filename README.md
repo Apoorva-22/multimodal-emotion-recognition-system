@@ -2,167 +2,245 @@
 
 A production-style multimodal AI system that predicts human emotions using:
 
-- Facial expressions (Vision)
-- Speech tone (Audio)
-- Text sentiment (NLP)
+* Facial Expressions (Vision)
+* Speech Tone (Audio)
+* Text Sentiment (NLP)
 
-Final emotions predicted:
+### Supported Emotions
 
-- Happy
-- Sad
-- Angry
-- Neutral
-- Fear
+* Happy
+* Sad
+* Angry
+* Neutral
+* Fear
+
+---
+
+## System Architecture
+
+```text
+Image --------\
+               \
+Audio ---------> Fusion Model ---> Final Emotion
+               /
+Text ---------/
+```
+
+### Models Used
+
+| Modality | Model             |
+| -------- | ----------------- |
+| Vision   | YOLOv8 + ResNet18 |
+| Audio    | MFCC + LSTM       |
+| Text     | DistilBERT        |
 
 ---
 
 ## Architecture
 
 ### Vision Pipeline
-Image/Webcam Frame  
-→ YOLO Face Detection  
-→ ResNet18 Emotion Classifier  
-→ Emotion Probabilities
 
-Dataset: FER2013
+```text
+Image/Webcam Frame
+        ↓
+YOLO Face Detection
+        ↓
+ResNet18 Emotion Classifier
+        ↓
+Emotion Probabilities
+```
 
-Accuracy: 61%
-
----
-
-## Audio Pipeline
-Audio Input (.wav)  
-→ MFCC Feature Extraction (Librosa)  
-→ LSTM Model  
-→ Emotion Probabilities
-
-Dataset: RAVDESS
-
-Accuracy: 61%
+**Dataset:** FER2013
+**Accuracy:** 61%
 
 ---
 
-## Text Pipeline
-Text Input  
-→ DistilBERT Tokenization  
-→ DistilBERT Classifier  
-→ Emotion Probabilities
+### Audio Pipeline
 
-Dataset: GoEmotions
+```text
+Audio Input (.wav)
+        ↓
+MFCC Feature Extraction (Librosa)
+        ↓
+LSTM Model
+        ↓
+Emotion Probabilities
+```
 
-Accuracy: 82%
-
----
-
-## Fusion Pipeline
-
-Emotion probabilities from all modalities are fused using:
-
-### Confidence-Aware Late Fusion
-
-- Default weights:
-  - Vision → 0.4
-  - Audio → 0.3
-  - Text → 0.3
-
-- If any modality confidence >95%, its weight is boosted.
-
-Final output:
-- Final emotion
-- Final probability distribution
+**Dataset:** RAVDESS
+**Accuracy:** 61%
 
 ---
 
-# Tech Stack
+### Text Pipeline
 
-- Python
-- PyTorch
-- FastAPI
-- OpenCV
-- YOLO
-- Librosa
-- HuggingFace Transformers
-- NumPy
-- Scikit-learn
+```text
+Text Input
+        ↓
+DistilBERT Tokenization
+        ↓
+DistilBERT Classifier
+        ↓
+Emotion Probabilities
+```
+
+**Dataset:** GoEmotions
+**Accuracy:** 82%
 
 ---
 
-# Folder Structure
+### Fusion Pipeline
 
+Emotion probabilities from all modalities are combined using a **Confidence-Aware Late Fusion** strategy.
+
+#### Default Fusion Weights
+
+* Vision → 0.4
+* Audio → 0.3
+* Text → 0.3
+
+#### Confidence Boosting
+
+If any modality predicts with confidence greater than **95%**, its contribution is automatically increased during fusion.
+
+#### Final Output
+
+* Final Emotion
+* Final Probability Distribution
+
+---
+
+## Key Highlights
+
+* Multimodal Emotion Recognition using Vision, Audio and Text
+* Confidence-Aware Late Fusion Strategy
+* Real-time Face Detection using YOLOv8
+* DistilBERT-based Text Emotion Classification
+* FastAPI Backend for Model Serving
+* Streamlit Frontend for Interactive Predictions
+* End-to-End ML Pipeline from Training to Deployment
+* Real-Time Emotion Prediction API
+* Probability-Based Emotion Interpretation
+
+---
+
+## Tech Stack
+
+| Category         | Technology                  |
+| ---------------- | --------------------------- |
+| Backend          | FastAPI                     |
+| Frontend         | Streamlit                   |
+| Deep Learning    | PyTorch                     |
+| NLP              | DistilBERT                  |
+| Computer Vision  | YOLOv8, ResNet18            |
+| Audio Processing | Librosa, MFCC               |
+| Data Processing  | NumPy, Pandas, Scikit-learn |
+
+---
+
+## Folder Structure
+
+```text
 emotion-recognition-system/
-
-src/
-- models/
-- training/
-- inference/
-- api/
-- data/
-
-checkpoints/
-
-notebooks/
-
----
-
-# API Endpoint
-
-POST:
-
-/predict-emotion
-
-Inputs:
-
-- image
-- audio
-- text
-
-Returns:
-
-- vision prediction
-- audio prediction
-- text prediction
-- final fused emotion
+│
+├── src/
+│   ├── models/
+│   ├── training/
+│   ├── inference/
+│   ├── api/
+│   ├── data/
+│   └── utils/
+│
+├── notebooks/
+├── screenshots/
+├── data/
+├── checkpoints/
+├── frontend.py
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-# Results
+## API Endpoint
 
-| Modality | Accuracy |
-|----------|------------|
-| Vision | 61% |
-| Audio | 61% |
-| Text | 82% |
+### POST `/predict-emotion`
 
----
+#### Inputs
 
-# Features
+* Image File
+* Audio File
+* Text Input
 
-- Real-time webcam detection
-- Image upload support
-- Audio upload support
-- Text input support
-- FastAPI backend
-- Multimodal fusion
+#### Returns
 
----
-
-# Future Improvements
-
-- Better text generalization
-- Video upload support
-- Trainable fusion model
-- Docker deployment
-- Frontend UI
+* Vision Prediction
+* Audio Prediction
+* Text Prediction
+* Final Fused Emotion
+* Final Probability Distribution
 
 ---
 
-# How to Run
+## Results
+
+| Modality | Dataset    | Accuracy |
+| -------- | ---------- | -------- |
+| Vision   | FER2013    | 61%      |
+| Audio    | RAVDESS    | 61%      |
+| Text     | GoEmotions | 82%      |
+
+---
+
+## Demo
+
+### FastAPI Backend API
+
+![FastAPI](screenshots/fastapi.png)
+
+### Streamlit Frontend
+
+![Frontend](screenshots/frontend_input.png)
+
+### Prediction Results
+
+![Results](screenshots/frontend_results.png)
+
+---
+
+## Features
+
+* Real-Time Webcam Emotion Detection
+* Image Upload Support
+* Audio Upload Support
+* Text Emotion Analysis
+* FastAPI Backend
+* Streamlit Frontend
+* Multimodal Fusion
+* Confidence-Aware Decision Making
+* Probability Visualization
+
+---
+
+## Future Improvements
+
+* Video Emotion Recognition
+* Trainable Fusion Network
+* Cloud Deployment
+* Additional Emotion Classes (Surprise, Disgust)
+* Model Monitoring and Analytics
+
+---
+
+## How to Run
+
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Train models:
+### Train Models
 
 ```bash
 python -m src.training.train_vision
@@ -170,38 +248,39 @@ python -m src.training.train_audio
 python -m src.training.train_text
 ```
 
-Run API:
+### Run FastAPI Backend
 
 ```bash
 uvicorn src.api.main:app --reload
 ```
 
-Open:
+### Open API Documentation
 
-```plaintext
+```text
 http://127.0.0.1:8000/docs
+```
+
+### Run Streamlit Frontend
+
+```bash
+streamlit run frontend.py
 ```
 
 ---
 
-## Demo
+## Real World Applications
 
-### FastAPI Backend API
-![FastAPI](screenshots/fastapi.png)
+* Mental Health Assistants
+* Customer Support Analysis
+* Interview Analytics
+* Smart Education Systems
+* Healthcare Monitoring
+* Human-Computer Interaction
+* Call Center Emotion Monitoring
+* AI-Powered Conversational Systems
 
-### Streamlit Frontend
-![Frontend](screenshots/frontend_input.png)
+---
 
-### Prediction Results
-![Results](screenshots/frontend_results.png)
+## Note
 
-# Real World Applications
-
-- Mental health assistants
-- Customer support analysis
-- Interview analytics
-- Smart education systems
-- Healthcare monitoring
-
-# NOTE
-- Pretrained model checkpoints excluded due to GitHub size limits.
+Pretrained model checkpoints are excluded from this repository due to GitHub file size limitations. Models can be retrained using the provided training pipelines.
