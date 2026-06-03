@@ -21,15 +21,7 @@ device = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )
 
-model = VisionEmotionModel().to(device)
-model.load_state_dict(
-    torch.load(
-        "checkpoints/vision.pt",
-        map_location=device
-    )
-)
 
-model.eval()
 
 transform = transforms.Compose([
     transforms.Resize((48,48)),
