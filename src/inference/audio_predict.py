@@ -17,7 +17,7 @@ device = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )
 
-
+model = None
 
 def preprocess_audio(audio_path):
     signal, sr = librosa.load(
@@ -50,6 +50,7 @@ def preprocess_audio(audio_path):
 
 
 def predict_audio_emotion(audio_path):
+    model = load_vision_model()
     features = preprocess_audio(audio_path)
 
     features = torch.tensor(
@@ -72,7 +73,24 @@ def predict_audio_emotion(audio_path):
         "probabilities": probs.tolist()
     }
 
+def load_vision_model():
 
+    global model
+
+    if model is None:
+
+        model = VisionEmotionModel().to(device)
+
+        model.load_state_dict(
+            torch.load(
+                "checkpoints/vision.pt",
+                map_location=device
+            )
+        )
+
+        model.eval()
+
+    return model
 if __name__ == "__main__":
     result = predict_audio_emotion(
         "sample.wav"
