@@ -10,23 +10,31 @@ MODELS = [
     "yolov8-face.pt"
 ]
 
-os.makedirs("checkpoints", exist_ok=True)
 
-for model_name in MODELS:
+def ensure_models():
 
-    local_path = os.path.join(
+    os.makedirs(
         "checkpoints",
-        model_name
+        exist_ok=True
     )
 
-    if not os.path.exists(local_path):
+    for model_name in MODELS:
 
-        print(f"Downloading {model_name}...")
-
-        hf_hub_download(
-            repo_id=REPO_ID,
-            filename=model_name,
-            local_dir="checkpoints"
+        local_path = os.path.join(
+            "checkpoints",
+            model_name
         )
 
-print("All models ready")
+        if not os.path.exists(local_path):
+
+            print(
+                f"Downloading {model_name}..."
+            )
+
+            hf_hub_download(
+                repo_id=REPO_ID,
+                filename=model_name,
+                local_dir="checkpoints"
+            )
+
+    print("All models ready")
