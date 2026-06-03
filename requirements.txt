@@ -71,7 +71,7 @@ jupyter_server_terminals==0.5.3
 jupyterlab==4.1.5
 jupyterlab_pygments==0.3.0
 jupyterlab_server==2.25.4
-keras @ file:///C:/Users/arvin/Downloads/keras-3.5.0-py3-none-any.whl#sha256=d37a3c623935713473ceb25241b52bce9d1e0ff5b36e5d0f6f47ed55f8500c9a
+keras==3.5.0
 kiwisolver==1.4.5
 lazy-loader==0.5
 libclang==18.1.1
