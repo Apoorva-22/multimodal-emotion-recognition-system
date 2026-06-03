@@ -1,11 +1,14 @@
 from fastapi import FastAPI, UploadFile, File, Form
 import shutil
 import os
-from src.utils.download_models import *
+from src.utils.download_models import ensure_models
 from src.inference.predictor import predict_multimodal
 
 app = FastAPI()
-
+@app.on_event("startup")
+async def startup_event():
+    ensure_models()
+    
 TEMP_DIR = "temp"
 os.makedirs(TEMP_DIR, exist_ok=True)
 
