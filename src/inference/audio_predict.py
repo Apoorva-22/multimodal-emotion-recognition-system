@@ -50,7 +50,7 @@ def preprocess_audio(audio_path):
 
 
 def predict_audio_emotion(audio_path):
-    model = load_vision_model()
+    model = load_audio_model()
     features = preprocess_audio(audio_path)
 
     features = torch.tensor(
@@ -73,17 +73,17 @@ def predict_audio_emotion(audio_path):
         "probabilities": probs.tolist()
     }
 
-def load_vision_model():
+def load_audio_model():
 
     global model
 
     if model is None:
 
-        model = VisionEmotionModel().to(device)
+        model = AudioEmotionModel().to(device)
 
         model.load_state_dict(
             torch.load(
-                "checkpoints/vision.pt",
+                "checkpoints/audio.pt",
                 map_location=device
             )
         )
@@ -91,6 +91,7 @@ def load_vision_model():
         model.eval()
 
     return model
+    
 if __name__ == "__main__":
     result = predict_audio_emotion(
         "sample.wav"
