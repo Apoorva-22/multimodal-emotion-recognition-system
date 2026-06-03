@@ -17,15 +17,6 @@ device = torch.device(
     "cuda" if torch.cuda.is_available() else "cpu"
 )
 
-# load model
-model = AudioEmotionModel().to(device)
-model.load_state_dict(
-    torch.load(
-        "checkpoints/audio.pt",
-        map_location=device
-    )
-)
-model.eval()
 
 
 def preprocess_audio(audio_path):
