@@ -23,7 +23,8 @@ device = torch.device(
 
 
 def predict_text_emotion(text):
-
+    
+    tokenizer, model = load_text_model()
     encoding = tokenizer(
         text,
         truncation=True,
