@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 import shutil
 import os
-
+from src.utils.download_models import *
 from src.inference.predictor import predict_multimodal
 
 app = FastAPI()
